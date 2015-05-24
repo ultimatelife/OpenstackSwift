@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.swift.dao.UserInfoDao">
+	
+	<!--Select + Where-->
+	<select id="userInfoSelectWhere" resultType="com.swift.dto.UserInfoDto">
+		 select * from user_info where id = #{param1} AND pw = #{param2} 
+	</select>
+	
+	<!--Update-->	
+	<update id="userInfoUpdate">
+		UPDATE user_info SET pw = #{param2}, email = #{param3} WHERE id = #{param1} AND name = #{param3} 
+	</update>
+	
+	<!--Insert-->
+	<insert id="userInfoInsert">
+		INSERT INTO user_info (id , pw, name, email, container) VALUES (#{param1}, #{param2}, #{param3}, #{param4}, #{param5})
+	</insert>
+	
+	<!--Delete-->
+	<delete id="userInfoDelete">
+		DELETE FROM user_info WHERE id = #{param1}
+	</delete>
+	
+</mapper>
