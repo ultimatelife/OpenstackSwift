@@ -60,7 +60,7 @@ public class UserInfoController {
 	@RequestMapping(value = "/insert")
 	public @ResponseBody String userInfoInsert(UserInfoDto dto){
 		UserInfoDao dao = sqlSession.getMapper(UserInfoDao.class);
-		dao.userInfoInsert(dto.getId(), dto.getPw(), dto.getName(), dto.getEmail(), dto.getContainer());
+		dao.userInfoInsert(dto.getId(), dto.getPw(), dto.getName(), dto.getEmail(), dto.getId());
 		return "Success";
 	}
 	
