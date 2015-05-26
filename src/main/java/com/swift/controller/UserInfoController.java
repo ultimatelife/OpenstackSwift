@@ -30,18 +30,31 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.swift.dao.UserInfoDao;
 import com.swift.dto.UserInfoDto;
+import com.swift.json.OpenstackSwiftUserInfo;
+import com.swift.swiftserver.SwiftCommunication;
 
 @Controller
 public class UserInfoController {
 	
 	@Autowired
 	private SqlSession sqlSession;
-	
+	 
 	@RequestMapping(value = "/selectWhere", method = RequestMethod.POST)
-	public @ResponseBody UserInfoDto userInfoDtoJsonList(@RequestParam("id") String id, @RequestParam("pw") String pw) {
+	public @ResponseBody ArrayList<OpenstackSwiftUserInfo>userInfoDtoJsonList(@RequestParam("id") String id, @RequestParam("pw") String pw) {
 		UserInfoDao dao = sqlSession.getMapper(UserInfoDao.class);
-		UserInfoDto dto = dao.userInfoSelectWhere(id, pw);
-		return dto;
+		UserInfoDto dto = null;
+		ArrayList<OpenstackSwiftUserInfo> arrOpenstackSwiftUserInfo = new ArrayList<OpenstackSwiftUserInfo>();
+		OpenstackSwiftUserInfo openstackSwiftUserInfo = new OpenstackSwiftUserInfo();
+		
+		try {
+			dto = dao.userInfoSelectWhere(id, pw);
+			openstackSwiftUserInfo.setContainer(dto.getContainer());
+			arrOpenstackSwiftUserInfo.add(openstackSwiftUserInfo);
+		} catch (Exception e) {
+			openstackSwiftUserInfo.setContainer("error");
+		}finally{
+			return arrOpenstackSwiftUserInfo;
+		}
 	}
 
 	@RequestMapping(value = "/insert")
@@ -64,5 +77,4 @@ public class UserInfoController {
 		dao.userInfoUpdate(dto.getId(), dto.getPw(), dto.getName(), dto.getEmail(), dto.getContainer());
 		return "Success";
 	}
-	
 }
