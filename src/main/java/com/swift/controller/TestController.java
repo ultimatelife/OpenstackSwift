@@ -36,9 +36,34 @@ import com.swift.swiftserver.SwiftCommunication;
 @Controller
 public class TestController {
 	
-	@RequestMapping(value = "/TestFile")
-	public String userInfoDtoJsonList() {
-		return "TestFile";
+	@RequestMapping(value = "/login")
+	public String login() {
+		return "login";
 	}
 	
+	
+	@RequestMapping(value = "/join")
+	public String join() {
+		return "join";
+	}
+	
+	@RequestMapping(value = "/inputContainer")
+	public String list() {
+		return "inputContainer";
+	}
+	
+	@RequestMapping(value = "/upload")
+	public String upload() {
+		return "upload";
+	}
+	
+	@RequestMapping(value = "/download")
+	public String download() {
+		return "download";
+	}
+	
+	@RequestMapping(value = "/deleteF")
+	public String delete() {
+		return "deleteF";
+	}
 }

@@ -1,5 +1,6 @@
 package com.swift.controller;
 
+import java.io.File;
 import java.lang.reflect.Member;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -15,6 +16,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 import org.apache.ibatis.session.SqlSession;
+import org.javaswift.joss.model.StoredObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.swift.dao.UserInfoDao;
 import com.swift.dto.UserInfoDto;
+import com.swift.json.Obj;
 import com.swift.json.OpenstackSwiftUserInfo;
 import com.swift.swiftserver.SwiftCommunication;
 
@@ -39,6 +42,47 @@ public class UserInfoController {
 	@Autowired
 	private SqlSession sqlSession;
 	 
+	@RequestMapping(value = "/objectlist", method=RequestMethod.POST)
+	public String objectList(@RequestParam("container") String container, Model model){
+		SwiftCommunication swiftCommunication = new SwiftCommunication("admin", "admin", "qwer1234", "http://192.168.0.14:5000/v2.0/tokens",container);
+		ArrayList<Obj> arrObj = swiftCommunication.objectList();
+		
+		for(int i = 0 ; i < arrObj.size() ;i++){
+			System.out.println(i);
+			System.out.println(arrObj.get(i));
+		}
+		
+		model.addAttribute("list", arrObj);
+		return "objectlist";
+	}
+	
+	@RequestMapping(value = "/fileDelete", method=RequestMethod.POST)
+	public String fileDelete(@RequestParam("file") String fileName){
+		SwiftCommunication swiftCommunication = new SwiftCommunication("admin", "admin", "qwer1234", "http://192.168.0.14:5000/v2.0/tokens","samsung");
+		StoredObject object= swiftCommunication.container.getObject(fileName);
+		object.delete();
+		System.out.println("File Delete Success");
+		return "Success";
+	}
+	
+	@RequestMapping(value = "/fileDownload", method=RequestMethod.POST)
+	public String fileDownload(@RequestParam("file") String fileName){
+		SwiftCommunication swiftCommunication = new SwiftCommunication("admin", "admin", "qwer1234", "http://192.168.0.14:5000/v2.0/tokens","samsung");
+		swiftCommunication.download(new File(fileName));
+		System.out.println("File Download Success");
+		return "Success";
+	}
+	
+	
+	@RequestMapping(value = "/fileUpload", method=RequestMethod.POST)
+	public String fileUpload(@RequestParam("file") String fileName){
+		SwiftCommunication swiftCommunication = new SwiftCommunication("admin", "admin", "qwer1234", "http://192.168.0.14:5000/v2.0/tokens","samsung");
+		swiftCommunication.upload(new File(fileName));
+		System.out.println("File Upload Success");
+		return "Success";
+	}
+	
+	
 	@RequestMapping(value = "/selectWhere", method = RequestMethod.POST)
 	public @ResponseBody ArrayList<OpenstackSwiftUserInfo>userInfoDtoJsonList(@RequestParam("id") String id, @RequestParam("pw") String pw) {
 		UserInfoDao dao = sqlSession.getMapper(UserInfoDao.class);
@@ -60,7 +104,13 @@ public class UserInfoController {
 	@RequestMapping(value = "/insert")
 	public @ResponseBody String userInfoInsert(UserInfoDto dto){
 		UserInfoDao dao = sqlSession.getMapper(UserInfoDao.class);
-		dao.userInfoInsert(dto.getId(), dto.getPw(), dto.getName(), dto.getEmail(), dto.getId());
+		dao.userInfoInsert(dto.getId(), dto.getPw(), dto.getName(), dto.getEmail(), dto.getContainer());
+		System.out.println("DB Successs");
+		
+		SwiftCommunication swiftCommunication = new SwiftCommunication("admin", "admin", "qwer1234", "http://192.168.0.14:5000/v2.0/tokens","music");
+		swiftCommunication.createContainer(dto.getContainer());
+		System.out.println("Container Successs");
+		
 		return "Success";
 	}
 	

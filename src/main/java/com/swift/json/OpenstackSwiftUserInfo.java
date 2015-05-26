@@ -7,6 +7,7 @@ public class OpenstackSwiftUserInfo {
 	String authUrl = "http://192.168.0.14:5000/v2.0/tokens";
 	String container;
 	
+	
 	public String getTenant() {
 		return tenant;
 	}
